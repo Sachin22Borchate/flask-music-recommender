@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Song Recommendation</title>
+</head>
+<body>
+    <h1>Song Recommendation</h1>
+    
+    <form id="recommendForm">
+        <label for="titleInput">Enter song title:</label>
+        <input type="text" id="titleInput" name="titleInput" required><br><br>
+
+        <label for="danceabilityInput">Rate the danceability of the song:</label>
+        <input type="number" id="danceabilityInput" name="danceabilityInput" step="0.01" required><br><br>
+
+        <label for="energyInput">Rate the energy of the song:</label>
+        <input type="number" id="energyInput" name="energyInput" step="0.01" required><br><br>
+
+        <label for="keyInput">Enter the key of the song:</label>
+        <input type="number" id="keyInput" name="keyInput" required><br><br>
+
+        <label for="loudnessInput">Enter the loudness of the song:</label>
+        <input type="number" id="loudnessInput" name="loudnessInput" step="0.01" required><br><br>
+
+        <label for="modeInput">Enter the mode of the song:</label>
+        <input type="number" id="modeInput" name="modeInput" required><br><br>
+
+        <label for="speechinessInput">Enter the speechiness of the song:</label>
+        <input type="number" id="speechinessInput" name="speechinessInput" step="0.01" required><br><br>
+
+        <label for="acousticnessInput">Enter the acousticness of the song:</label>
+        <input type="number" id="acousticnessInput" name="acousticnessInput" step="0.01" required><br><br>
+
+        <label for="instrumentalnessInput">Enter the instrumentalness of the song:</label>
+        <input type="number" id="instrumentalnessInput" name="instrumentalnessInput" step="0.01" required><br><br>
+
+        <label for="livenessInput">Enter the liveness of the song:</label>
+        <input type="number" id="livenessInput" name="livenessInput" step="0.01" required><br><br>
+
+        <label for="valenceInput">Enter the valence of the song:</label>
+        <input type="number" id="valenceInput" name="valenceInput" step="0.01" required><br><br>
+
+        <label for="tempoInput">Enter the tempo of the song (BPM):</label>
+        <input type="number" id="tempoInput" name="tempoInput" required><br><br>
+
+        <button type="submit">Get Recommendations</button>
+    </form>
+    
+    <h2>Recommended Songs:</h2>
+    <ul id="recommendedSongs"></ul>
+
+    <!-- jQuery library (add this if you're using jQuery) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Your custom JavaScript code -->
+    <script>
+        // JavaScript code provided earlier for handling form submission and AJAX request
+        // Assuming you're using jQuery for AJAX
+$(document).ready(function() {
+    $('#recommendForm').submit(function(event) {
+        event.preventDefault(); // Prevent form submission
+        
+        // Get input values
+        var title = $('#titleInput').val();
+        var danceability = parseFloat($('#danceabilityInput').val());
+        var energy = parseFloat($('#energyInput').val());
+        var key = parseFloat($('#keyInput').val());
+        var loudness = parseFloat($('#loudnessInput').val());
+        var mode = parseFloat($('#modeInput').val());
+        var speechiness = parseFloat($('#speechinessInput').val());
+        var acousticness = parseFloat($('#acousticnessInput').val());
+        var instrumentalness = parseFloat($('#instrumentalnessInput').val());
+        var liveness = parseFloat($('#livenessInput').val());
+        var valence = parseFloat($('#valenceInput').val());
+        var tempo = parseFloat($('#tempoInput').val());
+        
+        // Create data object
+        var data = {
+            title: title,
+            audio_features: [danceability, energy, key, loudness, mode, speechiness,
+                             acousticness, instrumentalness, liveness, valence, tempo]
+        };
+        
+        // Send AJAX request to backend
+        $.ajax({
+            type: 'POST',
+            url: '/recommend',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function(response) {
+                // Handle successful response
+                var recommendedTitles = response.recommended_titles;
+                
+                // Clear previous recommendations
+                $('#recommendedSongs').empty();
+                
+                // Display recommended titles
+                if (recommendedTitles.length > 0) {
+                    recommendedTitles.forEach(function(title) {
+                        $('#recommendedSongs').append('<li>' + title + '</li>');
+                    });
+                } else {
+                    $('#recommendedSongs').append('<li>No recommendations found</li>');
+                }
+            },
+            error: function(xhr, status, error) {
+                // Handle error
+                console.error(error);
+            }
+        });
+    });
+});
+
+    </script>
+</body>
+</html>
